@@ -78,16 +78,27 @@
       padding-top: 32px;
     }
 
-    .btn-primary {
+    .btn {
       width: 100%;
       padding: 16px;
       font-size: 17px;
       font-weight: 600;
-      color: #fff;
-      background: #2e7d32;
       border: none;
       border-radius: 12px;
       -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-primary {
+      color: #fff;
+      background: #2e7d32;
+    }
+
+    .btn-secondary {
+      display: none;
+      color: #1a1a1a;
+      background: #fff;
+      border: 1px solid #d0d0d0;
+      margin-bottom: 12px;
     }
   </style>
 </head>
@@ -102,7 +113,8 @@
       <div class="overlay-cutout" id="overlay"></div>
     </div>
     <div class="actions">
-      <button class="btn-primary" id="btn">Begin scanning</button>
+      <button class="btn btn-secondary" id="btn-retake">Retake</button>
+      <button class="btn btn-primary" id="btn">Begin scanning</button>
     </div>
   </div>
 
@@ -111,6 +123,7 @@
     let currentScreen = 'intro';
 
     const btn = document.getElementById('btn');
+    const btnRetake = document.getElementById('btn-retake');
     const title = document.querySelector('h1');
     const placeholder = document.getElementById('placeholder');
     const video = document.getElementById('video');
@@ -120,9 +133,12 @@
 
     function showScanningScreen() {
       placeholder.style.display = 'none';
+      photo.style.display = 'none';
       video.style.display = 'block';
       overlay.style.display = 'block';
+      btnRetake.style.display = 'none';
       video.srcObject = cameraStream;
+      title.textContent = 'Scan your driver license';
       btn.textContent = 'Take photo';
       currentScreen = 'scanning';
     }
@@ -141,6 +157,7 @@
 
       title.textContent = 'Check your photo';
       btn.textContent = 'Use photo';
+      btnRetake.style.display = 'block';
       currentScreen = 'review';
     }
 
@@ -159,6 +176,18 @@
         showReviewScreen();
       } else if (currentScreen === 'review') {
         console.log(photo.src);
+      }
+    });
+
+    btnRetake.addEventListener('click', async () => {
+      try {
+        cameraStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: { ideal: 'environment' } }
+        });
+        showScanningScreen();
+      } catch (err) {
+        console.error('Camera access denied', err);
+        location.reload();
       }
     });
   </script>
