@@ -79,7 +79,7 @@
         width: 85%;
         aspect-ratio: 3.375 / 2.125;
         border-radius: 8px;
-        box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7);
       }
 
       .actions {
@@ -185,6 +185,7 @@
           showReviewScreen();
         } else if (currentScreen === "review") {
           console.log(photo.src);
+          alert("photo serialized to console");
         }
       });
 
