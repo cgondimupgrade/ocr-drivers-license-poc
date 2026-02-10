@@ -1,196 +1,204 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
-  <title>Scan Driver License</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
+    <title>Scan Driver License</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #fff;
-      color: #1a1a1a;
-      min-width: 100vw;
-      min-height: 100dvh;
-      display: flex;
-      flex-direction: column;
-    }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background: #fff;
+        color: #1a1a1a;
+        width: 100vw;
+        height: 100dvh;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
 
-    .screen {
-      display: none;
-      flex-direction: column;
-      flex: 1;
-      padding: 24px 20px;
-    }
+      .screen {
+        display: none;
+        flex-direction: column;
+        flex: 1;
+        padding: 24px 20px;
+      }
 
-    .screen.active {
-      display: flex;
-      min-width: 100vw;
-      min-height: 100vh;
-    }
+      .screen.active {
+        display: flex;
+        width: 100%;
+        height: 100dvh;
+        max-width: 1024px;
+        max-height: 1024px;
+      }
 
-    h1 {
-      font-size: 22px;
-      font-weight: 600;
-      margin-bottom: 32px;
-    }
+      h1 {
+        font-size: 22px;
+        font-weight: 600;
+        margin-bottom: 32px;
+      }
 
-    .viewfinder-container {
-      width: 100%;
-      position: relative;
-      overflow: hidden;
-      border-radius: 12px;
-    }
+      .viewfinder-container {
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+        border-radius: 12px;
+      }
 
-    .viewfinder {
-      width: 100%;
-      aspect-ratio: 3.375 / 2.125;
-      background: #e5e5e5;
-    }
+      .viewfinder {
+        width: 100%;
+        aspect-ratio: 3.375 / 2.125;
+        background: #e5e5e5;
+      }
 
-    .viewfinder-container video,
-    .viewfinder-container img {
-      display: none;
-      width: 100%;
-      aspect-ratio: 3.375 / 2.125;
-      object-fit: cover;
-    }
+      .viewfinder-container video,
+      .viewfinder-container img {
+        display: none;
+        width: 100%;
+        aspect-ratio: 3.375 / 2.125;
+        object-fit: cover;
+      }
 
-    .overlay-cutout {
-      display: none;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 85%;
-      aspect-ratio: 3.375 / 2.125;
-      border-radius: 8px;
-      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
-    }
+      .overlay-cutout {
+        display: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 85%;
+        aspect-ratio: 3.375 / 2.125;
+        border-radius: 8px;
+        box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+      }
 
-    .actions {
-      margin-top: auto;
-      padding-top: 32px;
-    }
+      .actions {
+        margin-top: auto;
+        padding-top: 32px;
+      }
 
-    .btn {
-      width: 100%;
-      padding: 16px;
-      font-size: 17px;
-      font-weight: 600;
-      border: none;
-      border-radius: 12px;
-      -webkit-tap-highlight-color: transparent;
-    }
+      .btn {
+        width: 100%;
+        padding: 16px;
+        font-size: 17px;
+        font-weight: 600;
+        border: none;
+        border-radius: 12px;
+        -webkit-tap-highlight-color: transparent;
+      }
 
-    .btn-primary {
-      color: #fff;
-      background: #2e7d32;
-    }
+      .btn-primary {
+        color: #fff;
+        background: #2e7d32;
+      }
 
-    .btn-secondary {
-      display: none;
-      color: #1a1a1a;
-      background: #fff;
-      border: 1px solid #d0d0d0;
-      margin-bottom: 12px;
-    }
-  </style>
-</head>
-<body>
-  <div class="screen active">
-    <h1>Scan your driver license</h1>
-    <div class="viewfinder-container">
-      <div class="viewfinder" id="placeholder"></div>
-      <video id="video" autoplay playsinline></video>
-      <canvas id="canvas" style="display:none"></canvas>
-      <img id="photo">
-      <div class="overlay-cutout" id="overlay"></div>
+      .btn-secondary {
+        display: none;
+        color: #1a1a1a;
+        background: #fff;
+        border: 1px solid #d0d0d0;
+        margin-bottom: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="screen active">
+      <h1>Scan your driver license</h1>
+      <div class="viewfinder-container">
+        <div class="viewfinder" id="placeholder"></div>
+        <video id="video" autoplay playsinline></video>
+        <canvas id="canvas" style="display: none"></canvas>
+        <img id="photo" />
+        <div class="overlay-cutout" id="overlay"></div>
+      </div>
+      <div class="actions">
+        <button class="btn btn-secondary" id="btn-retake">Retake</button>
+        <button class="btn btn-primary" id="btn">Begin scanning</button>
+      </div>
     </div>
-    <div class="actions">
-      <button class="btn btn-secondary" id="btn-retake">Retake</button>
-      <button class="btn btn-primary" id="btn">Begin scanning</button>
-    </div>
-  </div>
 
-  <script>
-    let cameraStream = null;
-    let currentScreen = 'intro';
+    <script>
+      let cameraStream = null;
+      let currentScreen = "intro";
 
-    const btn = document.getElementById('btn');
-    const btnRetake = document.getElementById('btn-retake');
-    const title = document.querySelector('h1');
-    const placeholder = document.getElementById('placeholder');
-    const video = document.getElementById('video');
-    const canvas = document.getElementById('canvas');
-    const photo = document.getElementById('photo');
-    const overlay = document.getElementById('overlay');
+      const btn = document.getElementById("btn");
+      const btnRetake = document.getElementById("btn-retake");
+      const title = document.querySelector("h1");
+      const placeholder = document.getElementById("placeholder");
+      const video = document.getElementById("video");
+      const canvas = document.getElementById("canvas");
+      const photo = document.getElementById("photo");
+      const overlay = document.getElementById("overlay");
 
-    function showScanningScreen() {
-      placeholder.style.display = 'none';
-      photo.style.display = 'none';
-      video.style.display = 'block';
-      overlay.style.display = 'block';
-      btnRetake.style.display = 'none';
-      video.srcObject = cameraStream;
-      title.textContent = 'Scan your driver license';
-      btn.textContent = 'Take photo';
-      currentScreen = 'scanning';
-    }
+      function showScanningScreen() {
+        placeholder.style.display = "none";
+        photo.style.display = "none";
+        video.style.display = "block";
+        overlay.style.display = "block";
+        btnRetake.style.display = "none";
+        video.srcObject = cameraStream;
+        title.textContent = "Scan your driver license";
+        btn.textContent = "Take photo";
+        currentScreen = "scanning";
+      }
 
-    function showReviewScreen() {
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      canvas.getContext('2d').drawImage(video, 0, 0);
+      function showReviewScreen() {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext("2d").drawImage(video, 0, 0);
 
-      photo.src = canvas.toDataURL('image/jpeg', 0.9);
-      photo.style.display = 'block';
-      video.style.display = 'none';
-      overlay.style.display = 'none';
+        photo.src = canvas.toDataURL("image/jpeg", 0.9);
+        photo.style.display = "block";
+        video.style.display = "none";
+        overlay.style.display = "none";
 
-      cameraStream.getTracks().forEach(t => t.stop());
+        cameraStream.getTracks().forEach((t) => t.stop());
 
-      title.textContent = 'Check your photo';
-      btn.textContent = 'Use photo';
-      btnRetake.style.display = 'block';
-      currentScreen = 'review';
-    }
+        title.textContent = "Check your photo";
+        btn.textContent = "Use photo";
+        btnRetake.style.display = "block";
+        currentScreen = "review";
+      }
 
-    btn.addEventListener('click', async () => {
-      if (currentScreen === 'intro') {
+      btn.addEventListener("click", async () => {
+        if (currentScreen === "intro") {
+          try {
+            cameraStream = await navigator.mediaDevices.getUserMedia({
+              video: { facingMode: { ideal: "environment" } },
+            });
+            showScanningScreen();
+          } catch (err) {
+            console.error("Camera access denied", err);
+            location.reload();
+          }
+        } else if (currentScreen === "scanning") {
+          showReviewScreen();
+        } else if (currentScreen === "review") {
+          console.log(photo.src);
+        }
+      });
+
+      btnRetake.addEventListener("click", async () => {
         try {
           cameraStream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: { ideal: 'environment' } }
+            video: { facingMode: { ideal: "environment" } },
           });
           showScanningScreen();
         } catch (err) {
-          console.error('Camera access denied', err);
+          console.error("Camera access denied", err);
           location.reload();
         }
-      } else if (currentScreen === 'scanning') {
-        showReviewScreen();
-      } else if (currentScreen === 'review') {
-        console.log(photo.src);
-      }
-    });
-
-    btnRetake.addEventListener('click', async () => {
-      try {
-        cameraStream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: { ideal: 'environment' } }
-        });
-        showScanningScreen();
-      } catch (err) {
-        console.error('Camera access denied', err);
-        location.reload();
-      }
-    });
-  </script>
-</body>
+      });
+    </script>
+  </body>
 </html>
